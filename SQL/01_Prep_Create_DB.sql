@@ -1,86 +1,73 @@
 ﻿USE [master]
 
-
 IF db_id('Prep') IS NULL
-  CREATE DATABASE [Prep]
+    CREATE DATABASE [Prep]
 GO
-
 
 USE [Prep]
 GO
-
 
 DROP TABLE IF EXISTS [ListItem];
 DROP TABLE IF EXISTS [List];
 DROP TABLE IF EXISTS [Item];
 DROP TABLE IF EXISTS [Category];
-DROP TABLE IF EXISTS [User];
+DROP TABLE IF EXISTS [UserProfile]; 
 DROP TABLE IF EXISTS [Message];
 GO
 
-
-CREATE TABLE [User] (
-  [Id] INT PRIMARY KEY IDENTITY,
-  [Name] NVARCHAR(255) NOT NULL,
-  [Email] NVARCHAR(255) NOT NULL
+CREATE TABLE [UserProfile] (  
+    [Id] INT PRIMARY KEY IDENTITY,
+    [Name] NVARCHAR(255) NOT NULL,
+    [Email] NVARCHAR(255) NOT NULL
 )
 GO
-
 
 CREATE TABLE [Category] (
-  [Id] INT PRIMARY KEY IDENTITY,
-  [Name] NVARCHAR(255) NOT NULL
+    [Id] INT PRIMARY KEY IDENTITY,
+    [Name] NVARCHAR(255) NOT NULL
 )
 GO
-
 
 CREATE TABLE [Item] (
-  [Id] INT PRIMARY KEY IDENTITY,
-  [Name] NVARCHAR(255) NOT NULL,
-  [UserId] INT NOT NULL,
-  [CategoryId] INT NOT NULL,
-  [Have] BIT NOT NULL,
+    [Id] INT PRIMARY KEY IDENTITY,
+    [Name] NVARCHAR(255) NOT NULL,
+    [UserProfileId] INT NOT NULL,  
+    [CategoryId] INT NOT NULL,
+    [Have] BIT NOT NULL,
 
-
-  CONSTRAINT [FK_Item_User] FOREIGN KEY ([UserId]) REFERENCES [User] ([Id]),
-  CONSTRAINT [FK_Item_Category] FOREIGN KEY ([CategoryId]) REFERENCES [Category] ([Id])
+    CONSTRAINT [FK_Item_UserProfile] FOREIGN KEY ([UserProfileId]) REFERENCES [UserProfile] ([Id]),  
+    CONSTRAINT [FK_Item_Category] FOREIGN KEY ([CategoryId]) REFERENCES [Category] ([Id])
 )
 GO
-
 
 CREATE TABLE [List] (
-  [Id] INT PRIMARY KEY IDENTITY,
-  [Name] NVARCHAR(255) NOT NULL,
-  [UserId] INT NOT NULL,
-  [Location] NVARCHAR(255),
-  [Checked] DATE,
+    [Id] INT PRIMARY KEY IDENTITY,
+    [Name] NVARCHAR(255) NOT NULL,
+    [UserProfileId] INT NOT NULL,  
+    [Location] NVARCHAR(255),
+    [Checked] DATE,
 
-
-  CONSTRAINT [FK_List_User] FOREIGN KEY ([UserId]) REFERENCES [User] ([Id])
+    CONSTRAINT [FK_List_UserProfile] FOREIGN KEY ([UserProfileId]) REFERENCES [UserProfile] ([Id])  
 )
 GO
-
 
 CREATE TABLE [ListItem] (
-  [Id] INT PRIMARY KEY IDENTITY,
-  [ItemId] INT NOT NULL,
-  [ListId] INT NOT NULL,
-  [Amount] INT NOT NULL,
+    [Id] INT PRIMARY KEY IDENTITY,
+    [ItemId] INT NOT NULL,
+    [ListId] INT NOT NULL,
+    [Amount] INT NOT NULL,
 
-
-  CONSTRAINT [FK_ListItem_Item] FOREIGN KEY ([ItemId]) REFERENCES [Item] ([Id]),
-  CONSTRAINT [FK_ListItem_List] FOREIGN KEY ([ListId]) REFERENCES [List] ([Id])
+    CONSTRAINT [FK_ListItem_Item] FOREIGN KEY ([ItemId]) REFERENCES [Item] ([Id]),
+    CONSTRAINT [FK_ListItem_List] FOREIGN KEY ([ListId]) REFERENCES [List] ([Id])
 )
 GO
 
-
 CREATE TABLE [Message] (
-  [Id] INT PRIMARY KEY IDENTITY,
-  [Message] NVARCHAR(255) NOT NULL,
-  [UserId] INT NOT NULL,
-  [PostedDate] DATETIME NOT NULL,
+    [Id] INT PRIMARY KEY IDENTITY,
+    [Message] NVARCHAR(255) NOT NULL,
+    [UserProfileId] INT NOT NULL,  
+    [PostedDate] DATETIME NOT NULL,
 
-
-  CONSTRAINT [FK_Message_User] FOREIGN KEY ([UserId]) REFERENCES [User] ([Id])
+    CONSTRAINT [FK_Message_UserProfile] FOREIGN KEY ([UserProfileId]) REFERENCES [UserProfile] ([Id])  -- Updated foreign key
 )
 GO

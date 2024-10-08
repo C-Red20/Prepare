@@ -6,14 +6,13 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using Prepare.Repositories;
 
-
 namespace Prep.Repositories
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
         public UserRepository(IConfiguration configuration) : base(configuration) { }
 
-        public User GetByEmail(string email)
+        public UserProfile GetByEmail(string email)
         {
             using (var conn = Connection)
             {
@@ -22,17 +21,17 @@ namespace Prep.Repositories
                 {
                     cmd.CommandText = @"
                         SELECT Id, Name, Email
-                        FROM [User]
+                        FROM UserProfile
                         WHERE Email = @Email";
 
                     DbUtils.AddParameter(cmd, "@Email", email);
 
-                    User user = null;
+                    UserProfile userProfile = null;
                     var reader = cmd.ExecuteReader();
 
                     if (reader.Read())
                     {
-                        user = new User()
+                        userProfile = new UserProfile()
                         {
                             Id = DbUtils.GetInt(reader, "Id"),
                             Name = DbUtils.GetString(reader, "Name"),
@@ -41,12 +40,12 @@ namespace Prep.Repositories
                     }
                     reader.Close();
 
-                    return user;
+                    return userProfile; // Return the correct variable
                 }
             }
         }
 
-        public void Add(User user)
+        public void Add(UserProfile userProfile) // Update parameter type
         {
             using (var conn = Connection)
             {
@@ -54,19 +53,19 @@ namespace Prep.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        INSERT INTO [User] (Name, Email)
+                        INSERT INTO UserProfile (Name, Email)
                         OUTPUT INSERTED.Id
                         VALUES (@Name, @Email)";
 
-                    DbUtils.AddParameter(cmd, "@Name", user.Name);
-                    DbUtils.AddParameter(cmd, "@Email", user.Email);
+                    DbUtils.AddParameter(cmd, "@Name", userProfile.Name);
+                    DbUtils.AddParameter(cmd, "@Email", userProfile.Email);
 
-                    user.Id = (int)cmd.ExecuteScalar();
+                    userProfile.Id = (int)cmd.ExecuteScalar(); // Update to userProfile
                 }
             }
         }
 
-        public List<User> GetAll()
+        public List<UserProfile> GetAll() // Update return type
         {
             using (var conn = Connection)
             {
@@ -74,16 +73,15 @@ namespace Prep.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, Name, Email
-                        FROM [User]
-                        ORDER BY Name";
+                        SELECT Id, [Name], Email
+                        FROM UserProfile";
 
                     var reader = cmd.ExecuteReader();
-                    var users = new List<User>();
+                    var users = new List<UserProfile>(); // Update list type
 
                     while (reader.Read())
                     {
-                        users.Add(new User()
+                        users.Add(new UserProfile() // Update to UserProfile
                         {
                             Id = DbUtils.GetInt(reader, "Id"),
                             Name = DbUtils.GetString(reader, "Name"),
@@ -97,7 +95,7 @@ namespace Prep.Repositories
             }
         }
 
-        public User GetById(int id)
+        public UserProfile GetById(int id) // Update return type
         {
             using (var conn = Connection)
             {
@@ -106,17 +104,17 @@ namespace Prep.Repositories
                 {
                     cmd.CommandText = @"
                         SELECT Id, Name, Email
-                        FROM [User]
+                        FROM UserProfile
                         WHERE Id = @Id";
 
                     DbUtils.AddParameter(cmd, "@Id", id);
 
-                    User user = null;
+                    UserProfile userProfile = null; // Update to UserProfile
                     var reader = cmd.ExecuteReader();
 
                     if (reader.Read())
                     {
-                        user = new User()
+                        userProfile = new UserProfile() // Update to UserProfile
                         {
                             Id = DbUtils.GetInt(reader, "Id"),
                             Name = DbUtils.GetString(reader, "Name"),
@@ -125,12 +123,12 @@ namespace Prep.Repositories
                     }
                     reader.Close();
 
-                    return user;
+                    return userProfile; // Return the correct variable
                 }
             }
         }
 
-        public void Update(User user)
+        public void Update(UserProfile userProfile) // Update parameter type
         {
             using (var conn = Connection)
             {
@@ -138,13 +136,13 @@ namespace Prep.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        UPDATE [User]
+                        UPDATE UserProfile
                         SET Name = @Name, Email = @Email
                         WHERE Id = @Id";
 
-                    DbUtils.AddParameter(cmd, "@Name", user.Name);
-                    DbUtils.AddParameter(cmd, "@Email", user.Email);
-                    DbUtils.AddParameter(cmd, "@Id", user.Id);
+                    DbUtils.AddParameter(cmd, "@Name", userProfile.Name);
+                    DbUtils.AddParameter(cmd, "@Email", userProfile.Email);
+                    DbUtils.AddParameter(cmd, "@Id", userProfile.Id);
 
                     cmd.ExecuteNonQuery();
                 }

@@ -1,4 +1,7 @@
 
+using Prep.Repositories;
+using Prepare.Repositories;
+
 namespace Prepare
 {
     public class Program
@@ -10,6 +13,8 @@ namespace Prepare
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

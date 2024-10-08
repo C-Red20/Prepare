@@ -2,7 +2,7 @@
 
 namespace Prepare.Models
 {
-    public class User
+    public class UserProfile // Renamed from User to UserProfile
     {
         public int Id { get; set; }
 
@@ -14,6 +14,5 @@ namespace Prepare.Models
         [DataType(DataType.EmailAddress)]
         [MaxLength(255)]
         public string Email { get; set; }
-
     }
 }

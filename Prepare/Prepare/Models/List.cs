@@ -4,12 +4,12 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int UserId { get; set; }
+        public int UserProfileId { get; set; }
         public string Location { get; set; }
         public DateTime? Checked { get; set; }
 
         // Navigation properties
-        public User User { get; set; }
+        public UserProfile UserProfile { get; set; }
     }
 
 }

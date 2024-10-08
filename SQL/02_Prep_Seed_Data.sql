@@ -1,13 +1,12 @@
 ﻿USE [Prep];
 GO
 
-
-SET IDENTITY_INSERT [User] ON
-INSERT INTO [User] ([Id], [Name], [Email]) VALUES
+SET IDENTITY_INSERT [UserProfile] ON
+INSERT INTO [UserProfile] ([Id], [Name], [Email]) VALUES
 (1, 'John Doe', 'john.doe@example.com'),
 (2, 'Jane Smith', 'jane.smith@example.com'),
 (3, 'Mike Johnson', 'mike.johnson@example.com');
-SET IDENTITY_INSERT [User] OFF
+SET IDENTITY_INSERT [UserProfile] OFF
 
 
 SET IDENTITY_INSERT [Category] ON
@@ -21,7 +20,7 @@ SET IDENTITY_INSERT [Category] OFF
 
 
 SET IDENTITY_INSERT [Item] ON
-INSERT INTO [Item] ([Id], [Name], [UserId], [CategoryId], [Have]) VALUES
+INSERT INTO [Item] ([Id], [Name], [UserProfileId], [CategoryId], [Have]) VALUES
 (1, 'Canned Beans', 1, 1, 1),
 (2, 'First Aid Kit', 1, 2, 1),
 (3, 'Multi-tool', 2, 3, 0),
@@ -33,7 +32,7 @@ SET IDENTITY_INSERT [Item] OFF
 
 
 SET IDENTITY_INSERT [List] ON
-INSERT INTO [List] ([Id], [Name], [UserId], [Location], [Checked]) VALUES
+INSERT INTO [List] ([Id], [Name], [UserProfileId], [Location], [Checked]) VALUES
 (1, 'Survival Gear', 1, 'Storage Room', '2024-10-01'),
 (2, 'Food Stockpile', 2, 'Pantry', NULL),
 (3, 'Emergency Kit', 3, 'Car', '2024-09-28');
@@ -51,11 +50,9 @@ SET IDENTITY_INSERT [ListItem] OFF
 
 
 SET IDENTITY_INSERT [Message] ON
-INSERT INTO [Message] ([Id], [Message], [UserId], [PostedDate]) VALUES
+INSERT INTO [Message] ([Id], [Message], [UserProfileId], [PostedDate]) VALUES
 (1, 'Just stocked up on supplies!', 1, '2024-10-01 10:00:00'),
 (2, 'Looking for tips on emergency kits.', 2, '2024-10-02 12:30:00'),
 (3, 'Found a great deal on freeze-dried meals!', 1, '2024-10-03 14:15:00'),
 (4, 'Need recommendations for a good multi-tool.', 3, '2024-10-04 09:45:00');
 SET IDENTITY_INSERT [Message] OFF
-
-
