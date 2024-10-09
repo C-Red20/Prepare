@@ -1,4 +1,4 @@
-﻿USE [Prep];
+﻿USE [Prep]; 
 GO
 
 SET IDENTITY_INSERT [UserProfile] ON
@@ -50,7 +50,7 @@ SET IDENTITY_INSERT [ListItem] OFF
 
 
 SET IDENTITY_INSERT [Message] ON
-INSERT INTO [Message] ([Id], [Message], [UserProfileId], [PostedDate]) VALUES
+INSERT INTO [Message] ([Id], [Content], [UserProfileId], [PostedDate]) VALUES  
 (1, 'Just stocked up on supplies!', 1, '2024-10-01 10:00:00'),
 (2, 'Looking for tips on emergency kits.', 2, '2024-10-02 12:30:00'),
 (3, 'Found a great deal on freeze-dried meals!', 1, '2024-10-03 14:15:00'),

@@ -64,7 +64,7 @@ GO
 
 CREATE TABLE [Message] (
     [Id] INT PRIMARY KEY IDENTITY,
-    [Message] NVARCHAR(255) NOT NULL,
+    [Content] NVARCHAR(255) NOT NULL,
     [UserProfileId] INT NOT NULL,  
     [PostedDate] DATETIME NOT NULL,
 
