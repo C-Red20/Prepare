@@ -15,6 +15,7 @@ namespace Prepare
             builder.Services.AddControllers();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
             builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddTransient<IItemRepository, ItemRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
