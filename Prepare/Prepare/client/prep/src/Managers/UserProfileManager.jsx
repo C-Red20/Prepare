@@ -18,7 +18,7 @@ export const logout = () => {
 };
 
 export const register = (userObject) => {
-  return  fetch(`${apiUrl}/api/userprofile`, {
+  return  fetch(`${apiUrl}/api/User`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
