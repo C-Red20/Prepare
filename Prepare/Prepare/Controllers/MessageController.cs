@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Prepare.Models;
 using Prepare.Repositories;
 
@@ -17,13 +16,14 @@ namespace Prepare.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll()
         {
-            return Ok(_messageRepository.GetAll());
+            var messages = _messageRepository.GetAll();
+            return Ok(messages);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetById(int id)
         {
             var message = _messageRepository.GetById(id);
             if (message == null)
@@ -34,19 +34,26 @@ namespace Prepare.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(Message message)
+        public IActionResult Create(Message message)
         {
             _messageRepository.AddMessage(message);
-            return CreatedAtAction("Get", new { id = message.Id }, message);
+            return CreatedAtAction(nameof(GetById), new { id = message.Id }, message);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Message message)
+        public IActionResult Update(int id, Message message)
         {
             if (id != message.Id)
             {
-                return BadRequest();
+                return BadRequest("Message ID mismatch.");
             }
+
+            var existingMessage = _messageRepository.GetById(id);
+            if (existingMessage == null)
+            {
+                return NotFound();
+            }
+
             _messageRepository.UpdateMessage(message);
             return NoContent();
         }
@@ -54,6 +61,12 @@ namespace Prepare.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            var existingMessage = _messageRepository.GetById(id);
+            if (existingMessage == null)
+            {
+                return NotFound();
+            }
+
             _messageRepository.DeleteMessage(id);
             return NoContent();
         }

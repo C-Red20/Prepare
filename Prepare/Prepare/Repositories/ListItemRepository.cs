@@ -38,59 +38,60 @@ namespace Prepare.Repositories
 
         public ListItem GetById(int id)
         {
-            using (SqlConnection conn = Connection)
+            using (var conn = Connection)
             {
                 conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
+                using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "SELECT Id, ItemId, ListId, Amount FROM ListItem WHERE Id = @id";
                     DbUtils.AddParameter(cmd, "@id", id);
-                    SqlDataReader reader = cmd.ExecuteReader();
 
-                    if (reader.Read())
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        return new ListItem
+                        if (reader.Read())
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            ItemId = reader.GetInt32(reader.GetOrdinal("ItemId")),
-                            ListId = reader.GetInt32(reader.GetOrdinal("ListId")),
-                            Amount = reader.GetInt32(reader.GetOrdinal("Amount")),
-                        };
-                    }
+                            return new ListItem
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                ItemId = reader.GetInt32(reader.GetOrdinal("ItemId")),
+                                ListId = reader.GetInt32(reader.GetOrdinal("ListId")),
+                                Amount = reader.GetInt32(reader.GetOrdinal("Amount")),
+                            };
+                        }
 
-                    reader.Close();
-                    return null;
+                        return null;
+                    }
                 }
             }
         }
 
         public void AddListItem(ListItem listItem)
         {
-            using (SqlConnection conn = Connection)
+            using (var conn = Connection)
             {
                 conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
+                using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO ListItem (ItemId, ListId, Amount) 
-                                        OUTPUT INSERTED.ID 
-                                        VALUES (@itemId, @listId, @amount)";
+                    cmd.CommandText = @"
+                        INSERT INTO ListItem (ItemId, ListId, Amount) 
+                        OUTPUT INSERTED.ID 
+                        VALUES (@itemId, @listId, @amount)";
 
                     DbUtils.AddParameter(cmd, "@itemId", listItem.ItemId);
                     DbUtils.AddParameter(cmd, "@listId", listItem.ListId);
                     DbUtils.AddParameter(cmd, "@amount", listItem.Amount);
 
-                    int id = (int)cmd.ExecuteScalar();
-                    listItem.Id = id;
+                    listItem.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
 
         public void UpdateListItem(ListItem listItem)
         {
-            using (SqlConnection conn = Connection)
+            using (var conn = Connection)
             {
                 conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
+                using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
                         UPDATE ListItem
@@ -112,12 +113,12 @@ namespace Prepare.Repositories
 
         public void DeleteListItem(int id)
         {
-            using (SqlConnection conn = Connection)
+            using (var conn = Connection)
             {
                 conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
+                using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"DELETE FROM ListItem WHERE Id = @id";
+                    cmd.CommandText = "DELETE FROM ListItem WHERE Id = @id";
                     DbUtils.AddParameter(cmd, "@id", id);
                     cmd.ExecuteNonQuery();
                 }
@@ -126,28 +127,29 @@ namespace Prepare.Repositories
 
         public List<ListItem> GetByListId(int listId)
         {
-            using (SqlConnection conn = Connection)
+            using (var conn = Connection)
             {
                 conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
+                using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "SELECT Id, ItemId, ListId, Amount FROM ListItem WHERE ListId = @listId";
                     DbUtils.AddParameter(cmd, "@listId", listId);
-                    var reader = cmd.ExecuteReader();
                     var listItems = new List<ListItem>();
 
-                    while (reader.Read())
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        listItems.Add(new ListItem
+                        while (reader.Read())
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            ItemId = reader.GetInt32(reader.GetOrdinal("ItemId")),
-                            ListId = reader.GetInt32(reader.GetOrdinal("ListId")),
-                            Amount = reader.GetInt32(reader.GetOrdinal("Amount")),
-                        });
+                            listItems.Add(new ListItem
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                ItemId = reader.GetInt32(reader.GetOrdinal("ItemId")),
+                                ListId = reader.GetInt32(reader.GetOrdinal("ListId")),
+                                Amount = reader.GetInt32(reader.GetOrdinal("Amount")),
+                            });
+                        }
                     }
 
-                    reader.Close();
                     return listItems;
                 }
             }

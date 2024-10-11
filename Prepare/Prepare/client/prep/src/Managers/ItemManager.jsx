@@ -10,14 +10,18 @@ export const getItemById = (id) => {
         .then((res) => res.json());
 };
 
-export const addItem = (item) => {
-    return fetch(apiUrl, {
+export const addItem = async (item, userProfileId) => {
+    const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(item)
+        body: JSON.stringify({ ...item, userProfileId }) // Include userProfileId
     });
+
+    if (!response.ok) {
+        throw new Error('Failed to create item');
+    }
 };
 
 export const deleteItem = (id) => {

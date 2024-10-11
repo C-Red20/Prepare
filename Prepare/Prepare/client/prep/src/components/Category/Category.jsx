@@ -1,6 +1,8 @@
 import React from "react";
 import { Button, Card, CardBody } from "reactstrap";
 import { Link } from "react-router-dom";
+import { EditPencil, TrashcanDelete } from "../Icons.jsx";
+
 
 export const Category = ({ category }) => {
   return (
@@ -11,12 +13,12 @@ export const Category = ({ category }) => {
           <Link to={`/category/edit/${category.id}`}>
             {" "}
             <Button color="primary" outline size="sm">
-              Edit
+                <EditPencil color="blue" size={16} /> {/* Use the edit icon */}
             </Button>
           </Link>
           <Link to={`/category/delete/${category.id}`}>
             <Button color="success" outline size="sm">
-              Delete
+                <TrashcanDelete color="red" size={20} /> {/* Use the delete icon */}
             </Button>
           </Link>
         </p>

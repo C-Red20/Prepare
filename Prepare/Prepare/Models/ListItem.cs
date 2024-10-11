@@ -7,7 +7,7 @@
         public int ListId { get; set; }
         public int Amount { get; set; }
 
-        // Optional navigation properties
+        // Navigation properties
         public Item Item { get; set; }
         public List List { get; set; }
     }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Prepare.Models;
 using Prepare.Repositories;
 
@@ -19,7 +18,8 @@ namespace Prepare.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_listItemRepository.GetAll());
+            var listItems = _listItemRepository.GetAll();
+            return Ok(listItems);
         }
 
         [HttpGet("{id}")]
@@ -28,7 +28,7 @@ namespace Prepare.Controllers
             var listItem = _listItemRepository.GetById(id);
             if (listItem == null)
             {
-                return NotFound();
+                return NotFound($"ListItem with ID {id} not found.");
             }
             return Ok(listItem);
         }
@@ -36,17 +36,34 @@ namespace Prepare.Controllers
         [HttpPost]
         public IActionResult Post(ListItem listItem)
         {
+            if (listItem == null)
+            {
+                return BadRequest("ListItem cannot be null.");
+            }
+
             _listItemRepository.AddListItem(listItem);
-            return CreatedAtAction("Get", new { id = listItem.Id }, listItem);
+            return CreatedAtAction(nameof(Get), new { id = listItem.Id }, listItem);
         }
 
         [HttpPut("{id}")]
         public IActionResult Put(int id, ListItem listItem)
         {
+            if (listItem == null)
+            {
+                return BadRequest("ListItem cannot be null.");
+            }
+
             if (id != listItem.Id)
             {
-                return BadRequest();
+                return BadRequest("ID mismatch.");
             }
+
+            var existingListItem = _listItemRepository.GetById(id);
+            if (existingListItem == null)
+            {
+                return NotFound($"ListItem with ID {id} not found.");
+            }
+
             _listItemRepository.UpdateListItem(listItem);
             return NoContent();
         }
@@ -54,6 +71,12 @@ namespace Prepare.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            var existingListItem = _listItemRepository.GetById(id);
+            if (existingListItem == null)
+            {
+                return NotFound($"ListItem with ID {id} not found.");
+            }
+
             _listItemRepository.DeleteListItem(id);
             return NoContent();
         }
@@ -62,6 +85,10 @@ namespace Prepare.Controllers
         public IActionResult GetByListId(int listId)
         {
             var listItems = _listItemRepository.GetByListId(listId);
+            if (listItems == null || !listItems.Any())
+            {
+                return NotFound($"No ListItems found for List ID {listId}.");
+            }
             return Ok(listItems);
         }
     }

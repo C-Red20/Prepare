@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Prepare.Models;
 using Prepare.Repositories;
 
@@ -10,6 +9,7 @@ namespace Prepare.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
+
         public CategoryController(ICategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
@@ -19,7 +19,8 @@ namespace Prepare.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_categoryRepository.GetAll());
+            var categories = _categoryRepository.GetAll();
+            return Ok(categories);
         }
 
         // GET api/<CategoryController>/5
@@ -29,7 +30,7 @@ namespace Prepare.Controllers
             var category = _categoryRepository.GetById(id);
             if (category == null)
             {
-                return NotFound();
+                return NotFound($"Category with ID {id} not found.");
             }
             return Ok(category);
         }
@@ -38,18 +39,35 @@ namespace Prepare.Controllers
         [HttpPost]
         public IActionResult Post(Category category)
         {
+            if (category == null)
+            {
+                return BadRequest("Category cannot be null.");
+            }
+
             _categoryRepository.AddCategory(category);
-            return CreatedAtAction("Get", new { id = category.Id }, category);
+            return CreatedAtAction(nameof(Get), new { id = category.Id }, category);
         }
 
         // PUT api/<CategoryController>/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, Category category)
         {
+            if (category == null)
+            {
+                return BadRequest("Category cannot be null.");
+            }
+
             if (id != category.Id)
             {
-                return BadRequest();
+                return BadRequest("Category ID mismatch.");
             }
+
+            var existingCategory = _categoryRepository.GetById(id);
+            if (existingCategory == null)
+            {
+                return NotFound($"Category with ID {id} not found.");
+            }
+
             _categoryRepository.UpdateCategory(category);
             return NoContent();
         }
@@ -58,6 +76,12 @@ namespace Prepare.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            var existingCategory = _categoryRepository.GetById(id);
+            if (existingCategory == null)
+            {
+                return NotFound($"Category with ID {id} not found.");
+            }
+
             _categoryRepository.DeleteCategory(id);
             return NoContent();
         }

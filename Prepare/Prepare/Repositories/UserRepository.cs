@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using Prepare.Repositories;
 
-namespace Prep.Repositories
+namespace Prepare.Repositories // Adjusted namespace
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
@@ -31,7 +31,7 @@ namespace Prep.Repositories
 
                     if (reader.Read())
                     {
-                        userProfile = new UserProfile()
+                        userProfile = new UserProfile
                         {
                             Id = DbUtils.GetInt(reader, "Id"),
                             Name = DbUtils.GetString(reader, "Name"),
@@ -40,12 +40,12 @@ namespace Prep.Repositories
                     }
                     reader.Close();
 
-                    return userProfile; // Return the correct variable
+                    return userProfile;
                 }
             }
         }
 
-        public void Add(UserProfile userProfile) // Update parameter type
+        public void Add(UserProfile userProfile)
         {
             using (var conn = Connection)
             {
@@ -60,12 +60,12 @@ namespace Prep.Repositories
                     DbUtils.AddParameter(cmd, "@Name", userProfile.Name);
                     DbUtils.AddParameter(cmd, "@Email", userProfile.Email);
 
-                    userProfile.Id = (int)cmd.ExecuteScalar(); // Update to userProfile
+                    userProfile.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
 
-        public List<UserProfile> GetAll() // Update return type
+        public List<UserProfile> GetAll()
         {
             using (var conn = Connection)
             {
@@ -73,15 +73,15 @@ namespace Prep.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, [Name], Email
+                        SELECT Id, Name, Email
                         FROM UserProfile";
 
                     var reader = cmd.ExecuteReader();
-                    var users = new List<UserProfile>(); // Update list type
+                    var users = new List<UserProfile>();
 
                     while (reader.Read())
                     {
-                        users.Add(new UserProfile() // Update to UserProfile
+                        users.Add(new UserProfile
                         {
                             Id = DbUtils.GetInt(reader, "Id"),
                             Name = DbUtils.GetString(reader, "Name"),
@@ -95,7 +95,7 @@ namespace Prep.Repositories
             }
         }
 
-        public UserProfile GetById(int id) // Update return type
+        public UserProfile GetById(int id)
         {
             using (var conn = Connection)
             {
@@ -109,12 +109,12 @@ namespace Prep.Repositories
 
                     DbUtils.AddParameter(cmd, "@Id", id);
 
-                    UserProfile userProfile = null; // Update to UserProfile
+                    UserProfile userProfile = null;
                     var reader = cmd.ExecuteReader();
 
                     if (reader.Read())
                     {
-                        userProfile = new UserProfile() // Update to UserProfile
+                        userProfile = new UserProfile
                         {
                             Id = DbUtils.GetInt(reader, "Id"),
                             Name = DbUtils.GetString(reader, "Name"),
@@ -123,12 +123,12 @@ namespace Prep.Repositories
                     }
                     reader.Close();
 
-                    return userProfile; // Return the correct variable
+                    return userProfile;
                 }
             }
         }
 
-        public void Update(UserProfile userProfile) // Update parameter type
+        public void Update(UserProfile userProfile)
         {
             using (var conn = Connection)
             {

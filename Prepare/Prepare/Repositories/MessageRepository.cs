@@ -15,7 +15,7 @@ namespace Prepare.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, Content, UserProfileId, PostedDate FROM Message ORDER BY PostedDate DESC"; // Change here
+                    cmd.CommandText = "SELECT Id, Content, UserProfileId, PostedDate FROM Message ORDER BY PostedDate DESC";
                     var reader = cmd.ExecuteReader();
                     var messages = new List<Message>();
 
@@ -24,7 +24,7 @@ namespace Prepare.Repositories
                         messages.Add(new Message
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Content = reader.GetString(reader.GetOrdinal("Content")), // Change here
+                            Content = reader.GetString(reader.GetOrdinal("Content")),
                             UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
                             PostedDate = reader.GetDateTime(reader.GetOrdinal("PostedDate")),
                         });
@@ -43,16 +43,16 @@ namespace Prepare.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, Content, UserProfileId, PostedDate FROM Message WHERE Id = @id"; // Change here
+                    cmd.CommandText = "SELECT Id, Content, UserProfileId, PostedDate FROM Message WHERE Id = @id";
                     DbUtils.AddParameter(cmd, "@id", id);
-                    SqlDataReader reader = cmd.ExecuteReader();
+                    var reader = cmd.ExecuteReader();
 
                     if (reader.Read())
                     {
                         return new Message
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Content = reader.GetString(reader.GetOrdinal("Content")), // Change here
+                            Content = reader.GetString(reader.GetOrdinal("Content")),
                             UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
                             PostedDate = reader.GetDateTime(reader.GetOrdinal("PostedDate")),
                         };
@@ -71,11 +71,12 @@ namespace Prepare.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Message (Content, UserProfileId, PostedDate) 
-                                        OUTPUT INSERTED.ID 
-                                        VALUES (@content, @userProfileId, @postedDate)"; // Change here
+                    cmd.CommandText = @"
+                        INSERT INTO Message (Content, UserProfileId, PostedDate) 
+                        OUTPUT INSERTED.ID 
+                        VALUES (@content, @userProfileId, @postedDate)";
 
-                    DbUtils.AddParameter(cmd, "@content", message.Content); // Change here
+                    DbUtils.AddParameter(cmd, "@content", message.Content);
                     DbUtils.AddParameter(cmd, "@userProfileId", message.UserProfileId);
                     DbUtils.AddParameter(cmd, "@postedDate", message.PostedDate);
 
@@ -95,12 +96,12 @@ namespace Prepare.Repositories
                     cmd.CommandText = @"
                         UPDATE Message
                         SET 
-                            Content = @content, // Change here
+                            Content = @content,
                             UserProfileId = @userProfileId,
                             PostedDate = @postedDate
                         WHERE Id = @id";
 
-                    DbUtils.AddParameter(cmd, "@content", message.Content); // Change here
+                    DbUtils.AddParameter(cmd, "@content", message.Content);
                     DbUtils.AddParameter(cmd, "@userProfileId", message.UserProfileId);
                     DbUtils.AddParameter(cmd, "@postedDate", message.PostedDate);
                     DbUtils.AddParameter(cmd, "@id", message.Id);
@@ -131,7 +132,7 @@ namespace Prepare.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, Content, UserProfileId, PostedDate FROM Message WHERE UserProfileId = @userProfileId"; // Change here
+                    cmd.CommandText = "SELECT Id, Content, UserProfileId, PostedDate FROM Message WHERE UserProfileId = @userProfileId";
                     DbUtils.AddParameter(cmd, "@userProfileId", userProfileId);
                     var reader = cmd.ExecuteReader();
                     var messages = new List<Message>();
@@ -141,7 +142,7 @@ namespace Prepare.Repositories
                         messages.Add(new Message
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Content = reader.GetString(reader.GetOrdinal("Content")), // Change here
+                            Content = reader.GetString(reader.GetOrdinal("Content")),
                             UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
                             PostedDate = reader.GetDateTime(reader.GetOrdinal("PostedDate")),
                         });

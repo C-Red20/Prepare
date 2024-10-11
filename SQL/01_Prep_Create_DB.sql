@@ -45,17 +45,19 @@ CREATE TABLE [List] (
     [Name] NVARCHAR(255) NOT NULL,
     [UserProfileId] INT NOT NULL,  
     [Location] NVARCHAR(255),
-    [Checked] DATE,
+    [LastUpdated] DATETIME,
 
     CONSTRAINT [FK_List_UserProfile] FOREIGN KEY ([UserProfileId]) REFERENCES [UserProfile] ([Id])  
 )
-GO
+
 
 CREATE TABLE [ListItem] (
     [Id] INT PRIMARY KEY IDENTITY,
     [ItemId] INT NOT NULL,
     [ListId] INT NOT NULL,
     [Amount] INT NOT NULL,
+    [NeedsPurchase] BIT DEFAULT 0,
+    [LastUpdated] DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT [FK_ListItem_Item] FOREIGN KEY ([ItemId]) REFERENCES [Item] ([Id]),
     CONSTRAINT [FK_ListItem_List] FOREIGN KEY ([ListId]) REFERENCES [List] ([Id])
@@ -68,6 +70,6 @@ CREATE TABLE [Message] (
     [UserProfileId] INT NOT NULL,  
     [PostedDate] DATETIME NOT NULL,
 
-    CONSTRAINT [FK_Message_UserProfile] FOREIGN KEY ([UserProfileId]) REFERENCES [UserProfile] ([Id])  -- Updated foreign key
+    CONSTRAINT [FK_Message_UserProfile] FOREIGN KEY ([UserProfileId]) REFERENCES [UserProfile] ([Id])
 )
 GO

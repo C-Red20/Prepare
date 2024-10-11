@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using Prepare.Models;
+﻿using Prepare.Models;
+using System.Collections.Generic;
 
 namespace Prepare.Repositories
 {
     public interface IUserRepository
     {
-        void Add(UserProfile userProfile);  // Updated parameter name
-        UserProfile GetByEmail(string email); // Updated return type
-        List<UserProfile> GetAll(); // Updated return type
-        UserProfile GetById(int id); // Updated return type
-        void Update(UserProfile userProfile); // Updated parameter name
+        void Add(UserProfile userProfile);
+        UserProfile GetByEmail(string email);
+        List<UserProfile> GetAll();
+        UserProfile GetById(int id);
+        void Update(UserProfile userProfile);
     }
 }

@@ -30,3 +30,16 @@ export const register = (userObject) => {
       localStorage.setItem("userProfile", JSON.stringify(savedUserProfile))
     });
 };
+
+export const getAllUserProfiles = () => {
+  return fetch(apiUrl)
+      .then((res) => res.json());
+};
+
+export const getCurrentUserProfile = () => {
+  return fetch(`${apiUrl}/current`) // Ensure your API has an endpoint for the current user
+      .then((res) => {
+          if (!res.ok) throw new Error("Network response was not ok");
+          return res.json();
+      });
+};

@@ -11,8 +11,8 @@ namespace Prepare.Repositories
         // Retrieve a specific item by its ID
         Item GetById(int id);
 
-        // Add a new item
-        void AddItem(Item item);
+        // Add a new item with associated user profile ID
+        void AddItem(Item item, int userProfileId);
 
         // Update an existing item
         void UpdateItem(Item item);

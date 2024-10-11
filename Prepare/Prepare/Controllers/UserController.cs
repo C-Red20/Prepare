@@ -6,7 +6,7 @@ namespace Prep.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase // Changed to UserController for clarity
+    public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
 
@@ -18,52 +18,67 @@ namespace Prep.Controllers
         [HttpGet("GetByEmail")]
         public IActionResult GetByEmail(string email)
         {
-            var userProfile = _userRepository.GetByEmail(email); // Updated variable name
-
-            if (userProfile == null) // Simplified null check
+            var userProfile = _userRepository.GetByEmail(email);
+            if (userProfile == null)
             {
-                return NotFound();
+                return NotFound($"User with email {email} not found.");
             }
-            return Ok(userProfile); // Return updated variable
+            return Ok(userProfile);
         }
 
         [HttpPost]
-        public IActionResult Post(UserProfile userProfile) // Changed from User to UserProfile
+        public IActionResult Post(UserProfile userProfile)
         {
-            _userRepository.Add(userProfile); // Update to userProfile
+            if (userProfile == null)
+            {
+                return BadRequest("UserProfile is null.");
+            }
+
+            _userRepository.Add(userProfile);
             return CreatedAtAction(
-                nameof(GetByEmail), // Use nameof for better refactoring support
-                new { email = userProfile.Email }, // Update to userProfile
-                userProfile); // Update to userProfile
+                nameof(GetByEmail),
+                new { email = userProfile.Email },
+                userProfile);
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_userRepository.GetAll()); // Return all UserProfiles
+            var userProfiles = _userRepository.GetAll();
+            return Ok(userProfiles);
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var userProfile = _userRepository.GetById(id); // Updated variable name
-
+            var userProfile = _userRepository.GetById(id);
             if (userProfile == null)
             {
-                return NotFound();
+                return NotFound($"User with ID {id} not found.");
             }
-            return Ok(userProfile); // Return updated variable
+            return Ok(userProfile);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, UserProfile userProfile) // Changed parameter type to UserProfile
+        public IActionResult Put(int id, UserProfile userProfile)
         {
-            if (id != userProfile.Id)
+            if (userProfile == null)
             {
-                return BadRequest();
+                return BadRequest("UserProfile is null.");
             }
 
-            _userRepository.Update(userProfile); // Update to userProfile
+            if (id != userProfile.Id)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            var existingUserProfile = _userRepository.GetById(id);
+            if (existingUserProfile == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            _userRepository.Update(userProfile);
             return NoContent();
         }
     }

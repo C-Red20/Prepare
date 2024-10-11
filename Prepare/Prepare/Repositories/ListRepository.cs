@@ -15,9 +15,8 @@ namespace Prepare.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, Name, UserProfileId, Location, Checked FROM List ORDER BY Name ASC";
+                    cmd.CommandText = "SELECT Id, Name, UserProfileId, Location, LastUpdated FROM List ORDER BY Name ASC";
                     var reader = cmd.ExecuteReader();
-
                     var lists = new List<List>();
 
                     while (reader.Read())
@@ -28,7 +27,9 @@ namespace Prepare.Repositories
                             Name = reader.GetString(reader.GetOrdinal("Name")),
                             UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
                             Location = reader.GetString(reader.GetOrdinal("Location")),
-                            Checked = reader.IsDBNull(reader.GetOrdinal("Checked")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("Checked")),
+                            LastUpdated = reader.IsDBNull(reader.GetOrdinal("LastUpdated"))
+                                ? (DateTime?)null
+                                : reader.GetDateTime(reader.GetOrdinal("LastUpdated")),
                         });
                     }
 
@@ -45,28 +46,27 @@ namespace Prepare.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, Name, UserProfileId, Location, Checked FROM List WHERE Id = @id";
+                    cmd.CommandText = "SELECT Id, Name, UserProfileId, Location, LastUpdated FROM List WHERE Id = @id";
                     DbUtils.AddParameter(cmd, "@id", id);
 
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    if (reader.Read())
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        List list = new List
+                        if (reader.Read())
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Name = reader.GetString(reader.GetOrdinal("Name")),
-                            UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
-                            Location = reader.GetString(reader.GetOrdinal("Location")),
-                            Checked = reader.IsDBNull(reader.GetOrdinal("Checked")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("Checked")),
-                        };
+                            return new List
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
+                                Location = reader.GetString(reader.GetOrdinal("Location")),
+                                LastUpdated = reader.IsDBNull(reader.GetOrdinal("LastUpdated"))
+                                    ? (DateTime?)null
+                                    : reader.GetDateTime(reader.GetOrdinal("LastUpdated")),
+                            };
+                        }
 
-                        reader.Close();
-                        return list;
+                        return null;
                     }
-
-                    reader.Close();
-                    return null;
                 }
             }
         }
@@ -78,17 +78,17 @@ namespace Prepare.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO List (Name, UserProfileId, Location, Checked) 
-                                        OUTPUT INSERTED.ID 
-                                        VALUES (@name, @userProfileId, @location, @checked)";
+                    cmd.CommandText = @"
+                        INSERT INTO List (Name, UserProfileId, Location, LastUpdated) 
+                        OUTPUT INSERTED.ID 
+                        VALUES (@name, @userProfileId, @location, @lastUpdated)";
 
                     DbUtils.AddParameter(cmd, "@name", list.Name);
                     DbUtils.AddParameter(cmd, "@userProfileId", list.UserProfileId);
                     DbUtils.AddParameter(cmd, "@location", list.Location);
-                    DbUtils.AddParameter(cmd, "@checked", (object)list.Checked ?? DBNull.Value);
+                    DbUtils.AddParameter(cmd, "@lastUpdated", (object)list.LastUpdated ?? DBNull.Value);
 
-                    int id = (int)cmd.ExecuteScalar();
-                    list.Id = id;
+                    list.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
@@ -106,13 +106,13 @@ namespace Prepare.Repositories
                             Name = @name,
                             UserProfileId = @userProfileId,
                             Location = @location,
-                            Checked = @checked
+                            LastUpdated = @lastUpdated
                         WHERE Id = @id";
 
                     DbUtils.AddParameter(cmd, "@name", list.Name);
                     DbUtils.AddParameter(cmd, "@userProfileId", list.UserProfileId);
                     DbUtils.AddParameter(cmd, "@location", list.Location);
-                    DbUtils.AddParameter(cmd, "@checked", (object)list.Checked ?? DBNull.Value);
+                    DbUtils.AddParameter(cmd, "@lastUpdated", (object)list.LastUpdated ?? DBNull.Value);
                     DbUtils.AddParameter(cmd, "@id", list.Id);
 
                     cmd.ExecuteNonQuery();
@@ -127,7 +127,7 @@ namespace Prepare.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"DELETE FROM List WHERE Id = @id";
+                    cmd.CommandText = "DELETE FROM List WHERE Id = @id";
                     DbUtils.AddParameter(cmd, "@id", id);
                     cmd.ExecuteNonQuery();
                 }

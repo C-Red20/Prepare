@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Prepare.Models;
 using Prepare.Repositories;
 
@@ -20,7 +19,8 @@ namespace Prepare.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_itemRepository.GetAll());
+            var items = _itemRepository.GetAll();
+            return Ok(items);
         }
 
         // GET api/<ItemController>/5
@@ -30,7 +30,7 @@ namespace Prepare.Controllers
             var item = _itemRepository.GetById(id);
             if (item == null)
             {
-                return NotFound();
+                return NotFound($"Item with ID {id} not found.");
             }
             return Ok(item);
         }
@@ -39,18 +39,41 @@ namespace Prepare.Controllers
         [HttpPost]
         public IActionResult Post(Item item)
         {
-            _itemRepository.AddItem(item);
-            return CreatedAtAction("Get", new { id = item.Id }, item);
+            if (item == null)
+            {
+                return BadRequest("Item cannot be null.");
+            }
+
+            // Assuming userProfileId is passed through the item object
+            if (item.UserProfileId <= 0)
+            {
+                return BadRequest("Invalid UserProfileId.");
+            }
+
+            _itemRepository.AddItem(item, item.UserProfileId); // Pass UserProfileId explicitly
+            return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
         }
 
         // PUT api/<ItemController>/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, Item item)
         {
+            if (item == null)
+            {
+                return BadRequest("Item cannot be null.");
+            }
+
             if (id != item.Id)
             {
-                return BadRequest();
+                return BadRequest("Item ID mismatch.");
             }
+
+            var existingItem = _itemRepository.GetById(id);
+            if (existingItem == null)
+            {
+                return NotFound($"Item with ID {id} not found.");
+            }
+
             _itemRepository.UpdateItem(item);
             return NoContent();
         }
@@ -59,6 +82,12 @@ namespace Prepare.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            var existingItem = _itemRepository.GetById(id);
+            if (existingItem == null)
+            {
+                return NotFound($"Item with ID {id} not found.");
+            }
+
             _itemRepository.DeleteItem(id);
             return NoContent();
         }
