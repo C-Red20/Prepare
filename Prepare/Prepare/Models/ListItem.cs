@@ -8,7 +8,7 @@
         public int Amount { get; set; }
 
         // Navigation properties
-        public Item Item { get; set; }
+        public string ItemName { get; set; } // Add this property if needed
         public List List { get; set; }
     }
 }

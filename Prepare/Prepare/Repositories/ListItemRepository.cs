@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Prepare.Models;
 using Prepare.Utils;
+using System.Collections.Generic;
 
 namespace Prepare.Repositories
 {
@@ -132,7 +133,11 @@ namespace Prepare.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, ItemId, ListId, Amount FROM ListItem WHERE ListId = @listId";
+                    cmd.CommandText = @"
+                        SELECT li.Id, li.ItemId, li.ListId, li.Amount, i.Name AS ItemName
+                        FROM ListItem li
+                        JOIN Item i ON li.ItemId = i.Id
+                        WHERE li.ListId = @listId";
                     DbUtils.AddParameter(cmd, "@listId", listId);
                     var listItems = new List<ListItem>();
 
@@ -146,6 +151,7 @@ namespace Prepare.Repositories
                                 ItemId = reader.GetInt32(reader.GetOrdinal("ItemId")),
                                 ListId = reader.GetInt32(reader.GetOrdinal("ListId")),
                                 Amount = reader.GetInt32(reader.GetOrdinal("Amount")),
+                                ItemName = reader.GetString(reader.GetOrdinal("ItemName")) // Assuming ListItem has an ItemName property
                             });
                         }
                     }

@@ -41,10 +41,6 @@ export const ItemCreate = () => {
         addItem(newItem, userProfileId)
             .then(() => {
                 navigate("/items");
-            })
-            .catch((error) => {
-                console.error("Error adding item:", error);
-                // Optionally, show a user-friendly error message
             });
     };
 

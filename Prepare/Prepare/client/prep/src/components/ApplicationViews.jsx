@@ -14,6 +14,8 @@ import { ListCreate } from "./List/ListCreate.jsx";
 import { ListEdit } from "./List/ListEdit.jsx";
 import { ListDelete } from "./List/ListDelete.jsx";
 import { ShoppingList } from "./List/ShoppingList.jsx";
+import ListDetail from "./List/ListDetail.jsx";
+
 
 
 
@@ -39,6 +41,7 @@ export default function ApplicationViews() {
       <Route path="/list/edit/:id" element={<ListEdit />} /> {/* New route for editing a list */}
       <Route path="/list/delete/:id" element={<ListDelete />} /> {/* New route for deleting a list */}
       <Route path="/shopping" element={<ShoppingList />} />
+      <Route path="/list/detail/:id" element={<ListDetail />} />
     </Routes>
   );
 }
