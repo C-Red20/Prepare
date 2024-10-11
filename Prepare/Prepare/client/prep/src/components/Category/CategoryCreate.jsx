@@ -14,7 +14,7 @@ export const CategoryCreate = () => {
       name,
     };
     addCategory(newCategory).then((c) => {
-      navigate("/Category");
+      navigate("/categories");
     });
   };
 
