@@ -44,11 +44,14 @@ namespace Prepare.Controllers
                 return BadRequest("Item cannot be null.");
             }
 
-            // Assuming userProfileId is passed through the item object
+            // Ensure the UserProfileId is valid and is being passed correctly
             if (item.UserProfileId <= 0)
             {
                 return BadRequest("Invalid UserProfileId.");
             }
+
+            // Set the default value for 'Have' as true
+            item.Have = true; // If it should always be true when created
 
             _itemRepository.AddItem(item, item.UserProfileId); // Pass UserProfileId explicitly
             return CreatedAtAction(nameof(Get), new { id = item.Id }, item);

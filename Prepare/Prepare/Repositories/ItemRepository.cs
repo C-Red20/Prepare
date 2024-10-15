@@ -143,7 +143,6 @@ namespace Prepare.Repositories
                         UPDATE Item
                         SET 
                             Name = @name,
-                            UserProfileId = @userProfileId,
                             CategoryId = @categoryId,
                             Have = @have
                         WHERE Id = @id";
