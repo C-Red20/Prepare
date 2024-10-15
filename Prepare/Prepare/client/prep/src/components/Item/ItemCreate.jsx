@@ -34,8 +34,9 @@ export const ItemCreate = () => {
         e.preventDefault();
         const newItem = {
             name,
-            categoryId: parseInt(categoryId), // Ensure this is an integer
-            have: false // Set as needed
+            categoryId: parseInt(categoryId),
+            have: true,
+            userProfileId: userProfileId
         };
 
         addItem(newItem, userProfileId)

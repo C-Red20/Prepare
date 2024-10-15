@@ -20,10 +20,7 @@ export const ItemDelete = () => {
     const handleDelete = () => {
         deleteItem(id).then(() => {
             navigate("/items");
-        }).catch((error) => {
-            console.error("Error deleting item:", error);
-            // Optionally show an error message
-        });
+        })
     };
 
     if (!item) return <p>Loading...</p>;

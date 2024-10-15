@@ -42,10 +42,7 @@ export const ItemEdit = () => {
             .then(() => {
                 navigate("/items");
             })
-            .catch((error) => {
-                console.error("Error updating item:", error);
-                // Optionally show an error message
-            });
+            
     };
 
     return (

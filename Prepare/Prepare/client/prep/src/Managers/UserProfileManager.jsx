@@ -45,8 +45,14 @@ export const getAllUserProfiles = async () => {
 };
 
 export const getCurrentUserProfile = async () => {
+  const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
+  if (!userProfile || !userProfile.id) {
+    throw new Error("No user profile found");
+  }
+
   try {
-    const response = await fetch(`${apiUrl}/current`);
+    const response = await fetch(`${apiUrl}/${userProfile.id}`);
     if (!response.ok) {
       throw new Error("Failed to fetch current user profile");
     }
