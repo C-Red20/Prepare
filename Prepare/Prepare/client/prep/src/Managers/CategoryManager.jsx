@@ -58,22 +58,13 @@ export const deleteCategory = async (id) => {
     throw error;
   }
 };
-
-export const updateCategory = async (category) => {
-  try {
-    const response = await fetch(`${apiUrl}/${category.id}`, {
+  //fetch to handle the Edit
+  export const updateCategory = (category) => {
+    return fetch(`${apiUrl}/${category.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(category),
     });
-    if (!response.ok) {
-      throw new Error("Failed to update category");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error updating category:", error);
-    throw error;
-  }
-};
+  };

@@ -26,7 +26,7 @@ export const CategoryEdit = () => {
     e.preventDefault();
     const editCategory = {
       id: parseInt(id),
-      name,
+      name: name,
     };
     updateCategory(editCategory).then(() => {
       navigate("/categories");
