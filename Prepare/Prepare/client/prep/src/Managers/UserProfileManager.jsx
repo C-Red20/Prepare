@@ -1,46 +1,34 @@
 const apiUrl = "https://localhost:7254/api/User";
 
-export const login = async (userObject) => {
-  try {
-    const response = await fetch(`${apiUrl}/GetByEmail?email=${userObject.email}`);
-    if (!response.ok) {
-      throw new Error("Failed to log in");
-    }
-    const userProfile = await response.json();
-    if (userProfile.id) {
-      localStorage.setItem("userProfile", JSON.stringify(userProfile));
-      return userProfile;
-    } else {
-      throw new Error("User not found");
-    }
-  } catch (error) {
-    console.error("Error during login:", error);
-    throw error;
-  }
-};
-
-export const logout = () => {
-  localStorage.clear();
-};
-
-export const register = async (userObject) => {
-  try {
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userObject),
+export const login = (userObject) => {
+  return fetch(`${apiUrl}/api/GetByEmail?email=${userObject.email}`)
+  .then((r) => r.json())
+    .then((userProfile) => {
+      if(userProfile.id){
+        localStorage.setItem("userProfile", JSON.stringify(userProfile));
+        return userProfile
+      }
+      else{
+        return undefined
+      }
     });
-    if (!response.ok) {
-      throw new Error("Failed to register user");
-    }
-    const savedUserProfile = await response.json();
-    localStorage.setItem("userProfile", JSON.stringify(savedUserProfile));
-  } catch (error) {
-    console.error("Error during registration:", error);
-    throw error;
-  }
+};
+export const logout = () => {
+      localStorage.clear()
+};
+
+export const register = (userObject) => {
+  return  fetch(`${apiUrl}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userObject),
+  })
+  .then((response) => response.json())
+    .then((savedUserProfile) => {
+      localStorage.setItem("userProfile", JSON.stringify(savedUserProfile))
+    });
 };
 
 export const getAllUserProfiles = async () => {
