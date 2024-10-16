@@ -3,7 +3,7 @@ import { updateListDate } from "../../Managers/ListManager.jsx";
 import { Button, Input } from "reactstrap";
 
 export const ListEdit = ({ list }) => {
-    const [lastUpdated, setLastUpdated] = useState(list.Checked || '');
+    const [lastUpdated, setLastUpdated] = useState(list.lastUpdated || '');
 
     const handleSave = () => {
         updateListDate(list.id, lastUpdated).then(() => {

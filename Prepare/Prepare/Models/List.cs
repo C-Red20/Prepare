@@ -11,6 +11,6 @@ namespace Prepare.Models
         public DateTime? LastUpdated { get; set; } // Ensure this property exists
 
         // Navigation properties
-        public UserProfile UserProfile { get; set; }
+        public UserProfile? UserProfile { get; set; }
     }
 }
