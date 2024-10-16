@@ -104,13 +104,11 @@ namespace Prepare.Repositories
                         UPDATE List
                         SET 
                             Name = @name,
-                            UserProfileId = @userProfileId,
                             Location = @location,
                             LastUpdated = @lastUpdated
                         WHERE Id = @id";
 
                     DbUtils.AddParameter(cmd, "@name", list.Name);
-                    DbUtils.AddParameter(cmd, "@userProfileId", list.UserProfileId);
                     DbUtils.AddParameter(cmd, "@location", list.Location);
                     DbUtils.AddParameter(cmd, "@lastUpdated", (object)list.LastUpdated ?? DBNull.Value);
                     DbUtils.AddParameter(cmd, "@id", list.Id);

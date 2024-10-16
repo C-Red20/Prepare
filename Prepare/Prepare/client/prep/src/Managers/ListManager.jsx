@@ -46,23 +46,25 @@ export const addList = async (list) => {
 };
 
 export const updateList = async (list) => {
-  try {
-    const response = await fetch(`${apiUrl}/${list.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(list),
-    });
-    if (!response.ok) {
-      throw new Error("Failed to update list");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error updating list:", error);
-    throw error;
+  const response = await fetch(`${apiUrl}/${list.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(list),
+  });
+
+  // Only attempt to parse the response if there's content
+  if (response.ok) {
+    const text = await response.text(); // Read the response as text
+    return text ? JSON.parse(text) : null; // Parse only if there is content
   }
+  
+  throw new Error("Failed to update list");
 };
+
+
+
 
 export const deleteList = async (id) => {
   try {

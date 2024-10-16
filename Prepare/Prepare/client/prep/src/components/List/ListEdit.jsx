@@ -20,7 +20,7 @@ export const ListEdit = () => {
                 if (list) {
                     setName(list.name);
                     setLocation(list.location);
-                    setLastUpdated(list.lastUpdated); // Adjust based on your date format
+                    setLastUpdated(list.lastUpdated ? list.lastUpdated.split('T')[0] : "");
                 }
             } catch (error) {
                 console.error("Error fetching list:", error);
@@ -40,14 +40,10 @@ export const ListEdit = () => {
             lastUpdated, // Send the updated last updated date
         };
 
-        try {
-            await updateList(updatedList);
-            navigate("/lists"); // Redirect after successful update
-        } catch (error) {
-            console.error("Error updating list:", error);
-            // Handle error (e.g., show a notification)
-        }
+        await updateList(updatedList);
+        navigate("/lists"); // Redirect after successful update
     };
+
 
     return (
         <div>

@@ -22,6 +22,7 @@ import ListDetail from "./List/ListDetail.jsx";
 
 
 
+
 export default function ApplicationViews() {
   const [currentUser, setCurrentUser] = useState({});
 
@@ -41,7 +42,8 @@ export default function ApplicationViews() {
       <Route path="/list/edit/:id" element={<ListEdit />} /> {/* New route for editing a list */}
       <Route path="/list/delete/:id" element={<ListDelete />} /> {/* New route for deleting a list */}
       <Route path="/shopping" element={<ShoppingList />} />
-      <Route path="/list/detail/:id" element={<ListDetail />} />
+      <Route path="/list/details/:id" element={<ListDetail />} />
+
     </Routes>
   );
 }

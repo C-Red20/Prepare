@@ -9,7 +9,7 @@ export const List = ({ list, onDelete }) => {
             <Card> {/* Card for styling */}
                 <CardBody>
                     <strong>{list.name}</strong> {/* Display list name */}
-                    <p>Last Updated: {list.Checked ? new Date(list.Checked).toLocaleDateString() : 'Never'}</p> {/* Last updated info */}
+                    <p>Last Updated: {list.lastUpdated ? new Date(list.lastUpdated).toLocaleDateString() : 'Never'}</p> {/* Last updated info */}
 
                     {/* Display up to three items in the list */}
                     <ul>

@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom'; // Import the useParams hook
 import { Item } from '../Item/Item.jsx';
 import { getItemsByListId, getListById } from '../../Managers/ListManager.jsx';
 import { deleteListItem, updateListItem } from '../../Managers/ListItemManger.jsx'; 
 
-
-const ListDetail = ({ match }) => {
+const ListDetail = () => {
+    const { id } = useParams(); // Use useParams to get the list ID from the URL
     const [list, setList] = useState({});
     const [items, setItems] = useState([]);
     const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
 
     useEffect(() => {
         const fetchList = async () => {
-            const fetchedList = await getListById(match.params.id);
+            const fetchedList = await getListById(id); // Use the id from useParams
             setList(fetchedList);
-            const fetchedItems = await getItemsByListId(match.params.id);
+            const fetchedItems = await getItemsByListId(id);
             setItems(fetchedItems);
         };
         fetchList();
-    }, [match.params.id]);
+    }, [id]);
 
     const handleAmountChange = async (itemId, newAmount) => {
         await updateListItem({ itemId, amount: newAmount });
@@ -36,12 +37,6 @@ const ListDetail = ({ match }) => {
     const toggleModal = () => {
         setModalOpen(!modalOpen); // Toggle modal visibility
     };
-
-    // const handleAddItem = async (itemName) => {
-    //     // Call your backend function to add the new item
-    //     const addedItem = await addItemToList(list.id, { name: itemName, amount: 1 }); // Default amount is 1
-    //     setItems([...items, addedItem]); // Update local state with new item
-    // };
 
     return (
         <div>
@@ -64,7 +59,7 @@ const ListDetail = ({ match }) => {
 
             {/* Modal component for adding a new item */}
             {modalOpen && (
-                <AddItemModa 
+                <AddItemModal 
                     onClose={toggleModal} 
                     onAdd={handleAddItem} // Pass the handleAddItem function
                 />
