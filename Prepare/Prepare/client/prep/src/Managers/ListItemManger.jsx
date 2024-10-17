@@ -32,3 +32,10 @@ export const deleteListItem = async (itemId) => {
     throw error;
   }
 };
+
+export const getListItemsByListId = async (listId) => {
+  return fetch(`${apiUrl}/list/${listId}`)
+  .then((res) => res.json());
+}
+
+//POST
