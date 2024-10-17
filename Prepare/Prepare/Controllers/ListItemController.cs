@@ -41,9 +41,17 @@ namespace Prepare.Controllers
                 return BadRequest("ListItem cannot be null.");
             }
 
+            if (listItem.ItemId <= 0 || listItem.ListId <= 0 || listItem.Amount < 0)
+            {
+                return BadRequest("Invalid ListItem properties.");
+            }
+
+            // Optionally, you could check if ItemId and ListId exist in the database here before adding
+
             _listItemRepository.AddListItem(listItem);
             return CreatedAtAction(nameof(Get), new { id = listItem.Id }, listItem);
         }
+
 
         [HttpPut("{id}")]
         public IActionResult Put(int id, ListItem listItem)

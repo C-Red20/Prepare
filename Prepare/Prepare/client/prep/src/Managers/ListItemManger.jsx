@@ -38,4 +38,21 @@ export const getListItemsByListId = async (listId) => {
   .then((res) => res.json());
 }
 
-//POST
+export const addItemToList = async (item) => {
+  try {
+    const response = await fetch(`${apiUrl}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(item),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to add item to list");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error adding item to list:", error);
+    throw error;
+  }
+};
