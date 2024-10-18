@@ -84,13 +84,13 @@ const ListDetail = () => {
                 {itemzzz.map(item => ( 
                     <div key={item.id} className="item-container">
                         <Item item={item} />
-                        <div>Amount:</div>
+                        {/* <div>Amount:</div>
                         <input 
                             type="number" 
                             value={item.amount} 
                             onChange={(e) => handleAmountChange(item.id, e.target.value)} 
-                        />
-                        <button onClick={() => handleDeleteItem(item.id)}>🗑️</button>
+                        /> */}
+                        {/* <button onClick={() => handleDeleteItem(item.id)}>🗑️</button> */}
                     </div>
                 ))}
             </div>

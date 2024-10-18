@@ -11,7 +11,7 @@ export const Item = ({ item, categoryName }) => {
                 <Row className="align-items-center"> {/* Align items vertically centered */}
                     <Col xs="8"> {/* Column for item details */}
                         <strong>{item.name}</strong> {/* Display item name */}
-                        <span style={{ marginLeft: '10px' }}>(Category: {categoryName})</span> {/* Display category name */}
+                        <span style={{ marginLeft: '10px' }}>(Category: {item.category.name})</span> {/* Display category name */}
                     </Col>
                     <Col xs="4" className="text-end"> {/* Column for action buttons aligned to the right */}
                         <Link to={`/item/edit/${item.id}`}> {/* Link to edit item */}
