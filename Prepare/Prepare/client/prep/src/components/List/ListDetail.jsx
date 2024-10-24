@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Item } from "../Item/Item.jsx";
+import { ListItem } from "../Item/ListItem.jsx";
 import { getListById } from "../../Managers/ListManager.jsx";
 import {
   addItemToList,
@@ -8,73 +8,59 @@ import {
   getListItemsByListId,
   updateListItem,
 } from "../../Managers/ListItemManger.jsx";
-import { getAllItems } from "../../Managers/ItemManager.jsx"; // Add import for fetching all items
+import { getAllItems } from "../../Managers/ItemManager.jsx";
 
 const ListDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Get list ID from URL
   const [list, setList] = useState({});
-  const [items, setItems] = useState([]);
-  const [itemzzz, setItemzzz] = useState([]);
-  const [allItems, setAllItems] = useState([]); // State to hold all available items
-  const [modalOpen, setModalOpen] = useState(false);
+  const [listItems, setListItems] = useState([]); // Store ListItems
+  const [allItems, setAllItems] = useState([]);
 
-  const fetchList = () => {
-    // const fetchedList =  getListById(id);
-    // setList(fetchedList);
-    // let fetchedItems =  getListItemsByListId(id);
-    //  setItems(fetchedItems);
+  // Fetch the list details and the items within the list
+  const fetchList = async () => {
+    const listData = await getListById(id);
+    setList(listData); // Set the list details
 
-    // const allAvailableItems =  getAllItems();
-    // const filteredItems = allAvailableItems.filter(item =>
-    //     !fetchedItems.some(listItem => listItem.id === item.id)
-    // );
-    // setAllItems(filteredItems); // Set items not yet in the list
-    getListById(id)
-      .then(setList)
-      .then(() => getListItemsByListId(id))
-      .then(setItems)
-      .then(() => getAllItems())
-      .then((allitems) => {
-        const filteredItems = allitems.filter(
-          (item) => !items.some((listItem) => listItem.id === item.id)
-        );
-        setAllItems(filteredItems);
-      });
+    const listItemsData = await getListItemsByListId(id);
+    setListItems(listItemsData); // Fetch and set ListItems
+
+    const allItemsData = await getAllItems();
+    const filteredItems = allItemsData.filter(
+      (item) => !listItemsData.some((listItem) => listItem.itemId === item.id)
+    );
+    setAllItems(filteredItems); // Set available items that are not already in the list
   };
+
   useEffect(() => {
     fetchList();
   }, [id]);
 
-  useEffect(() => {
-    let fetchedItems = items.map((em) => {
-      const ob = allItems.find((x) => x.id == em.itemId);
-
-      return ob;
-    });
-    setItemzzz(fetchedItems);
-  }, [allItems]);
-
+  // Update amount for a ListItem
   const handleAmountChange = async (itemId, newAmount) => {
     await updateListItem({ itemId, amount: newAmount });
-    setItemzzz((prevItems) =>
+    setListItems((prevItems) =>
       prevItems.map((item) =>
         item.id === itemId ? { ...item, amount: newAmount } : item
       )
     );
   };
 
+  // Delete ListItem (remove from the list, not the database)
   const handleDeleteItem = async (itemId) => {
     await deleteListItem(itemId);
-    setItemzzz((prevItems) => prevItems.filter((item) => item.id !== itemId));
+    setListItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
   };
 
+  // Add item to the list
   const handleAddItem = async (item) => {
-    await addItemToList(item);
-    setItems((prevItems) => [...prevItems, { ...item, amount: 1 }]);
-    setAllItems((prevItems) => prevItems.filter((i) => i.id !== item.id));
-  };
-  const toggleModal = () => {
-    setModalOpen(!modalOpen);
+    const newItem = {
+      itemId: item.id,
+      listId: id,
+      amount: 1,
+    };
+    const addedItem = await addItemToList(newItem); // Get the response of the added item
+    setListItems((prevItems) => [...prevItems, addedItem]); // Add to listItems
+    setAllItems((prevItems) => prevItems.filter((i) => i.id !== item.id)); // Remove from available items
   };
 
   return (
@@ -92,9 +78,9 @@ const ListDetail = () => {
       </div>
 
       <div className="item-list">
-        {itemzzz.map((item) => (
+        {listItems.map((item) => (
           <div key={item.id} className="item-container">
-            <Item item={item} />
+            <ListItem item={item} /> {/* Passing each list item directly */}
             <div>Amount:</div>
             <input
               type="number"
@@ -118,31 +104,10 @@ const ListDetail = () => {
         {allItems.map((item) => (
           <div key={item.id} className="addable-item">
             <span>{item.name}</span>
-            <button
-              onClick={() => {
-                const bridgeObject = {
-                  itemId: item.id,
-                  listId: id,
-                  amount: 10,
-                  itemName: null,
-                  list: null,
-                };
-                handleAddItem(bridgeObject);
-              }}
-            >
-              Add
-            </button>
+            <button onClick={() => handleAddItem(item)}>Add</button>
           </div>
         ))}
       </div>
-
-      {modalOpen && (
-        <AddItemModal
-          onClose={toggleModal}
-          onAdd={handleAddItem}
-          availableItems={allItems} // Pass the available items to the modal
-        />
-      )}
     </div>
   );
 };
