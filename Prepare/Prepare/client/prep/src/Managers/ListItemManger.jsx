@@ -1,13 +1,14 @@
 const apiUrl = "https://localhost:7254/api/ListItem";
 
-export const updateListItem = async ({ itemId, amount }) => {
-  const response = await fetch(`${apiUrl}/item/${itemId}`, {
+export const updateListItem = async (itemId, amount) => {
+  const response = await fetch(`${apiUrl}/${itemId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ amount }),
+    body: JSON.stringify(amount), // Send only the amount
   });
+
   return await response.json();
 };
 

@@ -54,16 +54,11 @@ namespace Prepare.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, ListItem listItem)
+        public IActionResult Put(int id, [FromBody] int amount) // Expecting amount as the request body
         {
-            if (listItem == null)
+            if (amount < 0) // Optionally, you can validate the amount
             {
-                return BadRequest("ListItem cannot be null.");
-            }
-
-            if (id != listItem.Id)
-            {
-                return BadRequest("ID mismatch.");
+                return BadRequest("Amount cannot be negative.");
             }
 
             var existingListItem = _listItemRepository.GetById(id);
@@ -72,9 +67,11 @@ namespace Prepare.Controllers
                 return NotFound($"ListItem with ID {id} not found.");
             }
 
-            _listItemRepository.UpdateListItem(listItem);
+            existingListItem.Amount = amount; // Update only the amount
+            _listItemRepository.UpdateListItem(existingListItem);
             return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
@@ -93,11 +90,9 @@ namespace Prepare.Controllers
         public IActionResult GetByListId(int listId)
         {
             var listItems = _listItemRepository.GetByListId(listId);
-            if (listItems == null || !listItems.Any())
-            {
-                return NotFound($"No ListItems found for List ID {listId}.");
-            }
-            return Ok(listItems);
+            // Return an empty array if no items are found
+            return Ok(listItems ?? new List<ListItem>());
         }
+
     }
 }

@@ -24,10 +24,12 @@ const ListDetail = () => {
     const listItemsData = await getListItemsByListId(id);
     setListItems(listItemsData); // Fetch and set ListItems
 
+    // Fetch all items first, then filter out items already in the list
     const allItemsData = await getAllItems();
     const filteredItems = allItemsData.filter(
       (item) => !listItemsData.some((listItem) => listItem.itemId === item.id)
     );
+
     setAllItems(filteredItems); // Set available items that are not already in the list
   };
 
@@ -37,18 +39,29 @@ const ListDetail = () => {
 
   // Update amount for a ListItem
   const handleAmountChange = async (itemId, newAmount) => {
-    await updateListItem({ itemId, amount: newAmount });
+    console.log("Item ID:", itemId); // Should print the correct item ID
+    console.log("New Amount:", newAmount); // Ensure this is also correct
+
+    // Optimistically update local state
     setListItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === itemId ? { ...item, amount: newAmount } : item
+        item.id === itemId ? { ...item, amount: Number(newAmount) } : item
       )
     );
+
+    await updateListItem(itemId, newAmount); // Call with itemId and new amount
   };
 
   // Delete ListItem (remove from the list, not the database)
   const handleDeleteItem = async (itemId) => {
-    await deleteListItem(itemId);
+    // Optimistically remove item from local state
     setListItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+
+    // Proceed with deleting the item from the database
+    await deleteListItem(itemId);
+
+    // Refetch list items to ensure the local state is in sync with the server
+    fetchList(); // Call the fetchList function to update the component state
   };
 
   // Add item to the list
@@ -59,7 +72,15 @@ const ListDetail = () => {
       amount: 1,
     };
     const addedItem = await addItemToList(newItem); // Get the response of the added item
-    setListItems((prevItems) => [...prevItems, addedItem]); // Add to listItems
+
+    const listItemsData = await getListItemsByListId(id);
+    setListItems(listItemsData); // Fetch and set ListItems
+
+    // Update local state to include the newly added item
+    // setListItems((prevItems) => [
+    //   ...prevItems,
+    //   { ...addedItem, name: item.name },
+    // ]); // Add to listItems
     setAllItems((prevItems) => prevItems.filter((i) => i.id !== item.id)); // Remove from available items
   };
 
@@ -80,7 +101,8 @@ const ListDetail = () => {
       <div className="item-list">
         {listItems.map((item) => (
           <div key={item.id} className="item-container">
-            <ListItem item={item} /> {/* Passing each list item directly */}
+            <ListItem item={item} />{" "}
+            {/* Ensure ListItem handles rendering correctly */}
             <div>Amount:</div>
             <input
               type="number"
@@ -113,3 +135,17 @@ const ListDetail = () => {
 };
 
 export default ListDetail;
+
+// const handleAddItem = (item) => {
+//   const newItem = {
+//     itemId: item.id,
+//     listId: id,
+//     amount: 1,
+//   };
+//   addItemToList(newItem) // Get the response of the added item
+//     .then((r) => {
+//       // Update local state to include the newly added item
+//       setListItems((prevItems) => [...prevItems, { ...r, name: item.name }]); // Add to listItems
+//       setAllItems((prevItems) => prevItems.filter((i) => i.id !== item.id)); // Remove from available items
+//     });
+// };

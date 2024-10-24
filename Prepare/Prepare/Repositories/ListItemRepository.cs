@@ -97,14 +97,9 @@ namespace Prepare.Repositories
                 {
                     cmd.CommandText = @"
                         UPDATE ListItem
-                        SET 
-                            ItemId = @itemId,
-                            ListId = @listId,
-                            Amount = @amount
+                        SET Amount = @amount
                         WHERE Id = @id";
 
-                    DbUtils.AddParameter(cmd, "@itemId", listItem.ItemId);
-                    DbUtils.AddParameter(cmd, "@listId", listItem.ListId);
                     DbUtils.AddParameter(cmd, "@amount", listItem.Amount);
                     DbUtils.AddParameter(cmd, "@id", listItem.Id);
 
@@ -112,6 +107,7 @@ namespace Prepare.Repositories
                 }
             }
         }
+
 
         public void DeleteListItem(int id)
         {
