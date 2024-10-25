@@ -59,8 +59,13 @@ CREATE TABLE [ListItem] (
     [NeedsPurchase] BIT DEFAULT 0,
     [LastUpdated] DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT [FK_ListItem_Item] FOREIGN KEY ([ItemId]) REFERENCES [Item] ([Id]),
-    CONSTRAINT [FK_ListItem_List] FOREIGN KEY ([ListId]) REFERENCES [List] ([Id])
+    CONSTRAINT [FK_ListItem_Item] FOREIGN KEY ([ItemId]) 
+    REFERENCES [Item] ([Id]) 
+    ON DELETE CASCADE,
+
+    CONSTRAINT [FK_ListItem_List] FOREIGN KEY ([ListId]) 
+    REFERENCES [List] ([Id]) 
+    ON DELETE CASCADE
 )
 GO
 
