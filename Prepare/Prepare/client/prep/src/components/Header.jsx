@@ -1,3 +1,4 @@
+// Header.jsx
 import React, { useState } from "react";
 import { NavLink as RRNavLink } from "react-router-dom";
 import { logout } from "../Managers/UserProfileManager.jsx";
@@ -9,6 +10,7 @@ import {
   Nav,
   NavItem,
   NavLink,
+  Container,
 } from "reactstrap";
 
 export default function Header({ isLoggedIn, setIsLoggedIn }) {
@@ -21,59 +23,66 @@ export default function Header({ isLoggedIn, setIsLoggedIn }) {
   };
 
   return (
-    <div>
-      <Navbar color="light" light expand="md">
+    <Navbar color="light" light expand="md" fixed="top">
+      <Container className="d-flex justify-content-between align-items-center">
         <NavbarBrand tag={RRNavLink} to="/">
           Prepare
         </NavbarBrand>
-        <NavbarToggler onClick={toggle} />
-        <Collapse isOpen={isOpen} navbar>
+        <Collapse isOpen={isOpen} navbar className="mx-auto">
           <Nav className="mr-auto" navbar>
             {isLoggedIn && (
               <>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/">Home</NavLink>
+                  <NavLink tag={RRNavLink} to="/">
+                    Home
+                  </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/items">Items</NavLink>
+                  <NavLink tag={RRNavLink} to="/items">
+                    Items
+                  </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/categories">Categories</NavLink>
+                  <NavLink tag={RRNavLink} to="/categories">
+                    Categories
+                  </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/lists">List</NavLink>
-                </NavItem>
-                {/* <NavItem>
-                  <NavLink tag={RRNavLink} to="/shopping">Shopping List</NavLink>
-                </NavItem> */}
-              </>
-            )}
-          </Nav>
-          <Nav navbar>
-            {isLoggedIn ? (
-              <NavItem>
-                <a
-                  aria-current="page"
-                  className="nav-link"
-                  style={{ cursor: "pointer" }}
-                  onClick={handleLogout}
-                >
-                  Logout
-                </a>
-              </NavItem>
-            ) : (
-              <>
-                <NavItem>
-                  <NavLink tag={RRNavLink} to="/login">Login</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} to="/register">Register</NavLink>
+                  <NavLink tag={RRNavLink} to="/lists">
+                    List
+                  </NavLink>
                 </NavItem>
               </>
             )}
           </Nav>
         </Collapse>
-      </Navbar>
-    </div>
+        <div className="d-flex align-items-center">
+          {isLoggedIn ? (
+            <a
+              aria-current="page"
+              className="nav-link"
+              style={{ cursor: "pointer" }}
+              onClick={handleLogout}
+            >
+              Logout
+            </a>
+          ) : (
+            <>
+              <NavItem>
+                <NavLink tag={RRNavLink} to="/login">
+                  Login
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={RRNavLink} to="/register">
+                  Register
+                </NavLink>
+              </NavItem>
+            </>
+          )}
+        </div>
+        <NavbarToggler onClick={toggle} />
+      </Container>
+    </Navbar>
   );
 }

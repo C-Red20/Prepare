@@ -6,41 +6,41 @@ import { EditPencil, TrashcanDelete } from "../Icons.jsx"; // Import custom icon
 // Component for rendering individual items
 export const Item = ({ item, categoryName }) => {
   return (
-    <Card className="mb-3">
+    <Card className="mb-3" style={{ backgroundColor: "#f8f9fa" }}>
       {" "}
-      {/* Card to display item details with bottom margin */}
+      {/* Light gray background for item box */}
       <CardBody>
         <Row className="align-items-center">
-          {" "}
-          {/* Align items vertically centered */}
           <Col xs="8">
-            {" "}
-            {/* Column for item details */}
-            <strong>{item.name}</strong> {/* Display item name */}
+            <strong>{item.name}</strong>
             <span style={{ marginLeft: "10px" }}>
-              (Category: {item.category.name})
-            </span>{" "}
-            {/* Display category name */}
+              (Category: {categoryName})
+            </span>
           </Col>
           <Col xs="4" className="text-end">
-            {" "}
-            {/* Column for action buttons aligned to the right */}
             <Link to={`/item/edit/${item.id}`}>
-              {" "}
-              {/* Link to edit item */}
-              <Button color="primary" outline size="sm" className="me-2">
+              <Button
+                color="primary"
+                outline
+                size="sm"
+                style={{ border: "none" }}
+                className="me-2"
+              >
                 {" "}
-                {/* Edit button */}
-                <EditPencil color="blue" size={16} /> {/* Icon for edit */}
+                {/* Remove outline from edit button */}
+                <EditPencil color="blue" size={16} />
               </Button>
             </Link>
             <Link to={`/item/delete/${item.id}`}>
-              {" "}
-              {/* Link to delete item */}
-              <Button color="danger" outline size="sm">
+              <Button
+                color="danger"
+                outline
+                size="sm"
+                style={{ border: "none" }}
+              >
                 {" "}
-                {/* Delete button */}
-                <TrashcanDelete color="red" size={20} /> {/* Icon for delete */}
+                {/* Remove outline from delete button */}
+                <TrashcanDelete color="red" size={16} />
               </Button>
             </Link>
           </Col>
