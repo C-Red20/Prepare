@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ListItem } from "../Item/ListItem.jsx";
-import { getListById } from "../../Managers/ListManager.jsx";
 import {
   addItemToList,
   deleteListItem,
   getListItemsByListId,
   updateListItem,
 } from "../../Managers/ListItemManger.jsx";
+import { getListById } from "../../Managers/ListManager.jsx";
 import { getAllItems } from "../../Managers/ItemManager.jsx";
+import { Container, Card, CardBody, Row, Col, Button } from "reactstrap";
 
 const ListDetail = () => {
   const { id } = useParams(); // Get list ID from URL
@@ -39,10 +40,6 @@ const ListDetail = () => {
 
   // Update amount for a ListItem
   const handleAmountChange = async (itemId, newAmount) => {
-    console.log("Item ID:", itemId); // Should print the correct item ID
-    console.log("New Amount:", newAmount); // Ensure this is also correct
-
-    // Optimistically update local state
     setListItems((prevItems) =>
       prevItems.map((item) =>
         item.id === itemId ? { ...item, amount: Number(newAmount) } : item
@@ -54,13 +51,8 @@ const ListDetail = () => {
 
   // Delete ListItem (remove from the list, not the database)
   const handleDeleteItem = async (itemId) => {
-    // Optimistically remove item from local state
     setListItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
-
-    // Proceed with deleting the item from the database
     await deleteListItem(itemId);
-
-    // Refetch list items to ensure the local state is in sync with the server
     fetchList(); // Call the fetchList function to update the component state
   };
 
@@ -71,46 +63,63 @@ const ListDetail = () => {
       listId: id,
       amount: 1,
     };
-    const addedItem = await addItemToList(newItem); // Get the response of the added item
+    await addItemToList(newItem); // Get the response of the added item
 
     const listItemsData = await getListItemsByListId(id);
     setListItems(listItemsData); // Fetch and set ListItems
-
-    // Update local state to include the newly added item
-    // setListItems((prevItems) => [
-    //   ...prevItems,
-    //   { ...addedItem, name: item.name },
-    // ]); // Add to listItems
     setAllItems((prevItems) => prevItems.filter((i) => i.id !== item.id)); // Remove from available items
   };
 
   return (
-    <div>
-      <h2>{list.name}</h2>
-      <h4>Location: {list.location}</h4>
-      <div>
-        Last Updated:{" "}
-        {list.lastUpdated
-          ? new Date(list.lastUpdated)
-              .toLocaleDateString("en-GB")
-              .split("/")
-              .join("-")
-          : "N/A"}
-      </div>
+    <Container>
+      <h2 className="text-center">{list.name}</h2>
+      <Card className="mb-3">
+        <CardBody>
+          <Row>
+            <Col>
+              <strong>Location: {list.location}</strong>
+              <div>
+                Last Updated:{" "}
+                {list.lastUpdated
+                  ? new Date(list.lastUpdated)
+                      .toLocaleDateString("en-GB")
+                      .split("/")
+                      .join("-")
+                  : "N/A"}
+              </div>
+            </Col>
+          </Row>
+        </CardBody>
+      </Card>
 
       <div className="item-list">
         {listItems.map((item) => (
-          <div key={item.id} className="item-container">
-            <ListItem item={item} />{" "}
-            {/* Ensure ListItem handles rendering correctly */}
-            <div>Amount:</div>
-            <input
-              type="number"
-              value={item.amount}
-              onChange={(e) => handleAmountChange(item.id, e.target.value)}
-            />
-            <button onClick={() => handleDeleteItem(item.id)}>🗑️</button>
-          </div>
+          <Card key={item.id} className="mb-2">
+            <CardBody>
+              <ListItem item={item} />
+              <Row>
+                <Col xs="auto">
+                  <div>Amount:</div>
+                  <input
+                    type="number"
+                    value={item.amount}
+                    onChange={(e) =>
+                      handleAmountChange(item.id, e.target.value)
+                    }
+                    style={{ width: "70px" }} // Set a fixed width for the input
+                  />
+                </Col>
+                <Col xs="auto">
+                  <Button
+                    color="danger"
+                    onClick={() => handleDeleteItem(item.id)}
+                  >
+                    🗑️
+                  </Button>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
         ))}
       </div>
 
@@ -121,31 +130,22 @@ const ListDetail = () => {
           overflowY: "scroll",
           height: "200px",
           border: "1px solid gray",
+          padding: "10px",
         }}
       >
         {allItems.map((item) => (
-          <div key={item.id} className="addable-item">
-            <span>{item.name}</span>
-            <button onClick={() => handleAddItem(item)}>Add</button>
-          </div>
+          <Row key={item.id} className="mb-2">
+            <Col>
+              <span>{item.name}</span>
+            </Col>
+            <Col xs="auto">
+              <Button onClick={() => handleAddItem(item)}>Add</Button>
+            </Col>
+          </Row>
         ))}
       </div>
-    </div>
+    </Container>
   );
 };
 
 export default ListDetail;
-
-// const handleAddItem = (item) => {
-//   const newItem = {
-//     itemId: item.id,
-//     listId: id,
-//     amount: 1,
-//   };
-//   addItemToList(newItem) // Get the response of the added item
-//     .then((r) => {
-//       // Update local state to include the newly added item
-//       setListItems((prevItems) => [...prevItems, { ...r, name: item.name }]); // Add to listItems
-//       setAllItems((prevItems) => prevItems.filter((i) => i.id !== item.id)); // Remove from available items
-//     });
-// };

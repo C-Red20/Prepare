@@ -6,7 +6,7 @@ import { EditPencil, TrashcanDelete } from "../Icons.jsx"; // Import custom icon
 // Component for rendering individual items
 export const Item = ({ item, categoryName }) => {
   return (
-    <Card className="mb-3" style={{ backgroundColor: "#f8f9fa" }}>
+    <Card className="mb-3" style={{ backgroundColor: "#a1b3a5" }}>
       {" "}
       {/* Light gray background for item box */}
       <CardBody>
@@ -40,7 +40,7 @@ export const Item = ({ item, categoryName }) => {
               >
                 {" "}
                 {/* Remove outline from delete button */}
-                <TrashcanDelete color="red" size={16} />
+                <TrashcanDelete color="maroon" size={16} />
               </Button>
             </Link>
           </Col>

@@ -5,13 +5,15 @@ import { EditPencil, TrashcanDelete } from "../Icons.jsx";
 
 export const Category = ({ category }) => {
   return (
-    <Card className="mb-3" style={{ backgroundColor: "#578a54" }}>
+    <Card className="mb-3" style={{ backgroundColor: "#a1b3a5" }}>
       <CardBody>
         <Row className="align-items-center">
           <Col xs="8">
             <strong>{category.name}</strong>
           </Col>
           <Col xs="4" className="text-end">
+            {" "}
+            {/* Aligns buttons to the right */}
             <Link to={`/category/edit/${category.id}`}>
               <Button
                 color="primary"
@@ -30,7 +32,7 @@ export const Category = ({ category }) => {
                 size="sm"
                 style={{ border: "none" }}
               >
-                <TrashcanDelete color="red" size={20} />
+                <TrashcanDelete color="maroon" size={20} />
               </Button>
             </Link>
           </Col>
